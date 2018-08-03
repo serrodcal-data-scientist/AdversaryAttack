@@ -284,7 +284,7 @@
 \section{Ataque de adversario}\label{ataque-de-adversario}}
 
 En este cuaderno, voy a intentar realizar un ataque de adversario sobre
-una red neuronal construida utilizando Keras/Tensorwlow.
+una red neuronal construida utilizando Keras/Tensorflow.
 
 Un ataque de adversario consiste en conseguir una imagen que, sin
 parecer manipulada, una red neuronal la clasifica erróneamente. Con
@@ -296,7 +296,8 @@ velocidad, provocando una situación peligrosa.
 \subsection{Evaluación de la imagen}\label{evaluaciuxf3n-de-la-imagen}}
 
 En primer lugar, voy a realizar una evaluación normal de una imagen de
-un coche. Para ello, primero importamos las librerías que necesitamos.
+un gato. Para ello, primero importamos las librerías que se van a
+necesitar.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{tensorflow} \PY{k}{as} \PY{n+nn}{tf} \PY{c+c1}{\PYZsh{} Importamos la librería de Tensorflow}
@@ -311,7 +312,8 @@ Using TensorFlow backend.
 
     \end{Verbatim}
 
-    Ahora, vamos a cargar nuestro modelo precargado utilizando Keras.
+    Ahora, se carga el modelo precargado desde Keras. Es decir, no hay que
+entrenarlo, ya lo está.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}2}]:} \PY{c+c1}{\PYZsh{} Importamos los modelos entrenados de Keras, en especial la InceptionV3, de Google y para imágenes, así como, }
@@ -322,19 +324,19 @@ Using TensorFlow backend.
 \end{Verbatim}
 
 
-    A continuación, vamos a cargar el modelo de la librería.
+    A continuación, se carga el modelo, en este caso ``Inception V3'', una
+red neuronal específica para imágenes de Google.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}3}]:} \PY{n}{iv3} \PY{o}{=} \PY{n}{InceptionV3}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 
 
-    Finalmente, vamos a utilizar la imagen para probar nuestro modelo, en
-este caso, será la imagen de un coche.
+    Finalmente, se va a utilizar la imagen para probar el modelo.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}4}]:} \PY{c+c1}{\PYZsh{} Cargamos la imagen en una variable como array con un tamaño redimensionado a 299x299}
-        \PY{n}{X} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./coche.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{target\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{299}\PY{p}{,}\PY{l+m+mi}{299}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
+        \PY{n}{X} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./gato.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{target\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{299}\PY{p}{,}\PY{l+m+mi}{299}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
         
         \PY{c+c1}{\PYZsh{} InceptionV3 utiliza un formato diferente, el rango de intensidades va de \PYZhy{}1 a 1. Vamos a reescalar este rango.}
         \PY{c+c1}{\PYZsh{} Pasamos de [0,256) \PYZhy{}\PYZgt{} [\PYZhy{}1,1]}
@@ -345,23 +347,23 @@ este caso, será la imagen de un coche.
 \end{Verbatim}
 
 
-    La red neuronal nos pide que pasemos un formato especial, un tensor, que
-tiene unas dimensiones parecidas a las que tenemos ahora, pero
-necesitamos una dimensión más:
+    La red neuronal pide un formato especial, un tensor, que tiene unas
+dimensiones específicas, es decir, se necesita una dimensión más:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}5}]:} \PY{n}{X} \PY{o}{=} \PY{n}{X}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{)}
 \end{Verbatim}
 
 
-    Ahora, vamos a predecir qué tenemos en la imagen:
+    Ahora, se va a ejecutar la predicción soble la imagen:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}6}]:} \PY{n}{y} \PY{o}{=} \PY{n}{iv3}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X}\PY{p}{)}
 \end{Verbatim}
 
 
-    Pero, vamos a ver qué ha predicho:
+    Para ejecutar la predicción, se utiliza la librería
+``decode\_prediction'' que se ha importado previamente:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}7}]:} \PY{n}{decode\PYZus{}predictions}\PY{p}{(}\PY{n}{y}\PY{p}{)}
@@ -369,15 +371,15 @@ necesitamos una dimensión más:
 
 
 \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}7}]:} [[('n04285008', 'sports\_car', 0.76075476),
-          ('n03459775', 'grille', 0.079246424),
-          ('n03100240', 'convertible', 0.046836168),
-          ('n04037443', 'racer', 0.0211682),
-          ('n02974003', 'car\_wheel', 0.01438693)]]
+{\color{outcolor}Out[{\color{outcolor}7}]:} [[('n02124075', 'Egyptian\_cat', 0.86809808),
+          ('n02123045', 'tabby', 0.073509209),
+          ('n02123159', 'tiger\_cat', 0.03579814),
+          ('n04589890', 'window\_screen', 0.0029933434),
+          ('n02127052', 'lynx', 0.00035754172)]]
 \end{Verbatim}
             
-    La imagen que le hemos pasado es la siguiente, que nos ha dicho que es
-un coche deportivo:
+    La predicción dice que se trata de un gato egipcio. La imagen utilizada
+ha sido la siguiente:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}8}]:} \PY{c+c1}{\PYZsh{} Vamos a reescalar primero el rango de intensidades a como estaba originalmente}
@@ -404,7 +406,7 @@ un coche deportivo:
 \subsection{Generando la imagen para realizar el ataque de
 adversario}\label{generando-la-imagen-para-realizar-el-ataque-de-adversario}}
 
-Ahora vamos a generar la nueva imagen, la que provocará que la red
+Ahora se va a generar la nueva imagen, la que provocará que la red
 neuronal se equivoque. Esto es, ir provocando que se maximice el error:
 
     \begin{Verbatim}[commandchars=\\\{\}]
@@ -419,8 +421,8 @@ neuronal se equivoque. Esto es, ir provocando que se maximice el error:
 \end{Verbatim}
 
 
-    Ahora vamos a realizar el gradiente, para encontrar el mínimo, es decir,
-el objetivo:
+    Ahora es necesario definir el gradiente, para encontrar el mínimo, es
+decir, el objetivo:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}11}]:} \PY{c+c1}{\PYZsh{} Nos hace el gráfo entre el valor de entrada y el cálculo del gradiente}
@@ -431,7 +433,7 @@ el objetivo:
 \end{Verbatim}
 
 
-    Una vez tenemos esto, hacemos el bucle donde ejecutar este código:
+    Una vez hecho esto, falta el bucle donde ejecutar este código:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}12}]:} \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{X}\PY{p}{)}
@@ -444,8 +446,8 @@ el objetivo:
 \end{Verbatim}
 
 
-    Finalmente, vamos a devolver al rango de intesidades la nueva imagen y a
-mostrarla.
+    Finalmente, se devuelve al rango de intesidades la nueva imagen y se
+mostrarla:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}13}]:} \PY{n}{adv} \PY{o}{/}\PY{o}{=} \PY{l+m+mi}{2}
@@ -465,23 +467,24 @@ mostrarla.
     \end{center}
     { \hspace*{\fill} \\}
     
-    Ahora vemos la imagen hackeada, y se ven ciertos pixeles que nos pueden
-hacer sospechar. Además, vamos a guardar dicha imagen para que se
-persistan.
+    Ahora se tiene la imagen hackeada, y se ven ciertos pixeles que pueden
+hacer sospechar. Además, se va a guardar dicha imagen para que se
+persista el resultado:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}15}]:} \PY{c+c1}{\PYZsh{} Guardamos la imagen}
          \PY{k+kn}{from} \PY{n+nn}{PIL} \PY{k}{import} \PY{n}{Image}
          \PY{n}{im} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{fromarray}\PY{p}{(}\PY{n}{adv}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{uint8}\PY{p}{)}\PY{p}{)}
-         \PY{n}{im}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./coche\PYZus{}hacked.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{im}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./gato\PYZus{}hacked.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \end{Verbatim}
 
 
-    Vamos a cargar de nuevo la imagen y a realizar la predicción (limón):
+    Se carga de nuevo la imagen y se realiza la predicción (se espera que el
+resultado sea: limón):
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}16}]:} \PY{c+c1}{\PYZsh{} Cargamos la imagen en una variable como array con un tamaño redimensionado a 299x299}
-         \PY{n}{img\PYZus{}hacked} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./coche\PYZus{}hacked.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{target\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{299}\PY{p}{,}\PY{l+m+mi}{299}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
+         \PY{n}{img\PYZus{}hacked} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./gato\PYZus{}hacked.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)} 
          
          \PY{c+c1}{\PYZsh{} InceptionV3 utiliza un formato diferente, el rango de intensidades va de \PYZhy{}1 a 1. Vamos a reescalar este rango.}
          \PY{c+c1}{\PYZsh{} Pasamos de [0,256) \PYZhy{}\PYZgt{} [\PYZhy{}1,1]}
@@ -498,41 +501,44 @@ persistan.
 
 
 \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}16}]:} [[('n03459775', 'grille', 0.44975972),
-           ('n04285008', 'sports\_car', 0.32452583),
-           ('n04037443', 'racer', 0.085936964),
-           ('n02974003', 'car\_wheel', 0.042665422),
-           ('n03100240', 'convertible', 0.011454979)]]
+{\color{outcolor}Out[{\color{outcolor}16}]:} [[('n07749582', 'lemon', 0.62572002),
+           ('n04476259', 'tray', 0.026909433),
+           ('n04522168', 'vase', 0.025146704),
+           ('n07930864', 'cup', 0.024562402),
+           ('n03950228', 'pitcher', 0.018331205)]]
 \end{Verbatim}
             
+    Efectivamente, el resultado dice que lo que ha recibido en la imagen es
+un limón.
+
     \hypertarget{minimizar-la-diferencia-entre-imuxe1genes}{%
 \subsubsection{Minimizar la diferencia entre
 imágenes}\label{minimizar-la-diferencia-entre-imuxe1genes}}
 
-Ahora vamos a decirle a la red neuronal que no se extralimite haciendo
-la manipulación, así la imagen pasará por una imagen normal.
+Ahora se quiere decir a la red neuronal que no se extralimite haciendo
+la manipulación, así la imagen pasará por una imagen normal:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}17}]:} \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{img\PYZus{}hacked}\PY{p}{)}
-         
-         \PY{c+c1}{\PYZsh{} Límite de la perturbación}
-         \PY{n}{pert} \PY{o}{=} \PY{l+m+mf}{0.01}
-         
-         \PY{n}{max\PYZus{}pert} \PY{o}{=} \PY{n}{X} \PY{o}{+} \PY{n}{pert}
-         \PY{n}{min\PYZus{}pert} \PY{o}{=} \PY{n}{X} \PY{o}{\PYZhy{}} \PY{n}{pert}
-         
-         \PY{n}{cost} \PY{o}{=} \PY{l+m+mf}{0.0}
-         
-         \PY{k}{while} \PY{n}{cost} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.95}\PY{p}{:}
-             \PY{n}{gr}\PY{p}{,} \PY{n}{cost} \PY{o}{=} \PY{n}{optimize\PYZus{}gradient}\PY{p}{(}\PY{p}{[}\PY{n}{adv}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Utilizamos la copia que realizamos anteriormente}
-             \PY{n}{adv} \PY{o}{+}\PY{o}{=} \PY{n}{gr} \PY{c+c1}{\PYZsh{} Manipulamos los píxeles}
-             \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{clip}\PY{p}{(}\PY{n}{adv}\PY{p}{,} \PY{n}{min\PYZus{}pert}\PY{p}{,} \PY{n}{max\PYZus{}pert}\PY{p}{)} \PY{c+c1}{\PYZsh{} Ponemos el límite a la perturbación}
-             \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{clip}\PY{p}{(}\PY{n}{adv}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Ponemos el límite a la intensidad}
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} Límite de la perturbación}
+        \PY{n}{pert} \PY{o}{=} \PY{l+m+mf}{0.01}
+        
+        \PY{n}{max\PYZus{}pert} \PY{o}{=} \PY{n}{X} \PY{o}{+} \PY{n}{pert}
+        \PY{n}{min\PYZus{}pert} \PY{o}{=} \PY{n}{X} \PY{o}{\PYZhy{}} \PY{n}{pert}
+        
+        \PY{n}{cost} \PY{o}{=} \PY{l+m+mf}{0.0}
+        
+        \PY{k}{while} \PY{n}{cost} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.95}\PY{p}{:}
+            \PY{n}{gr}\PY{p}{,} \PY{n}{cost} \PY{o}{=} \PY{n}{optimize\PYZus{}gradient}\PY{p}{(}\PY{p}{[}\PY{n}{adv}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Utilizamos la copia que realizamos anteriormente}
+            \PY{n}{adv} \PY{o}{+}\PY{o}{=} \PY{n}{gr} \PY{c+c1}{\PYZsh{} Manipulamos los píxeles}
+            \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{clip}\PY{p}{(}\PY{n}{adv}\PY{p}{,} \PY{n}{min\PYZus{}pert}\PY{p}{,} \PY{n}{max\PYZus{}pert}\PY{p}{)} \PY{c+c1}{\PYZsh{} Ponemos el límite a la perturbación}
+            \PY{n}{adv} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{clip}\PY{p}{(}\PY{n}{adv}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Ponemos el límite a la intensidad}
 \end{Verbatim}
 
 
-    Vamos a mostrar el resultado, para ver que la imagen parece que no ha
-sido alterada:
+    Para mostrar el resultado, y ver que la imagen parece que no ha sido
+alterada:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}18}]:} \PY{n}{adv} \PY{o}{/}\PY{o}{=} \PY{l+m+mi}{2}
@@ -548,7 +554,7 @@ sido alterada:
 
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_36_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
@@ -557,10 +563,10 @@ hay en la imagen es un limón:
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}20}]:} \PY{n}{im} \PY{o}{=} \PY{n}{Image}\PY{o}{.}\PY{n}{fromarray}\PY{p}{(}\PY{n}{adv}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{uint8}\PY{p}{)}\PY{p}{)}
-         \PY{n}{im}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./coche\PYZus{}hacked\PYZus{}good.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{im}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./gato\PYZus{}hacked\PYZus{}good.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
          
          \PY{c+c1}{\PYZsh{} Cargamos la imagen en una variable como array con un tamaño redimensionado a 299x299}
-         \PY{n}{img\PYZus{}hacked} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./coche\PYZus{}hacked\PYZus{}good.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{target\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{299}\PY{p}{,}\PY{l+m+mi}{299}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
+         \PY{n}{img\PYZus{}hacked} \PY{o}{=} \PY{n}{image}\PY{o}{.}\PY{n}{img\PYZus{}to\PYZus{}array}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{load\PYZus{}img}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./gato\PYZus{}hacked\PYZus{}good.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)} 
          
          \PY{c+c1}{\PYZsh{} InceptionV3 utiliza un formato diferente, el rango de intensidades va de \PYZhy{}1 a 1. Vamos a reescalar este rango.}
          \PY{c+c1}{\PYZsh{} Pasamos de [0,256) \PYZhy{}\PYZgt{} [\PYZhy{}1,1]}
@@ -577,13 +583,16 @@ hay en la imagen es un limón:
 
 
 \begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}20}]:} [[('n07749582', 'lemon', 0.99824047),
-           ('n07747607', 'orange', 0.00090086751),
-           ('n02974003', 'car\_wheel', 6.3390318e-05),
-           ('n03459775', 'grille', 4.1884861e-05),
-           ('n03100240', 'convertible', 3.9411218e-05)]]
+{\color{outcolor}Out[{\color{outcolor}20}]:} [[('n07749582', 'lemon', 0.99910444),
+           ('n07747607', 'orange', 0.00026996125),
+           ('n09229709', 'bubble', 5.943119e-05),
+           ('n07753275', 'pineapple', 4.1333893e-05),
+           ('n07718472', 'cucumber', 3.5098896e-05)]]
 \end{Verbatim}
             
+    Finalmente, se obtiene como resultado que lo que tiene la imagen es un
+limón (a pesar de ser un gato), y la imagen ya no parece modificada.
+
 
     % Add a bibliography block to the postdoc
     
